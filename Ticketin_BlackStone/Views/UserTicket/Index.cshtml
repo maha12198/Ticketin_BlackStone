@@ -1,0 +1,80 @@
+﻿@model IEnumerable<Ticketin_BlackStone.Models.Ticket>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>List of All Tickets</h1>
+
+<hr />
+<div class="row">
+    <div class="col-sm-6">
+        <div class="card bg-primary">
+            <div class="card-body">
+                <h5 class="card-title">Number of Open/In-Progress Tickets</h5>
+                <p class="card-text"> @Model.Count(model => model.Status == true ) </p>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-6">
+        <div class="card bg-success">
+            <div class="card-body">
+                <h5 class="card-title">Number of Closed Tickets</h5>
+                <p class="card-text">@Model.Count(model => model.Status == false )</p>
+            </div>
+        </div>
+    </div>
+</div>
+<hr />
+@*<p>
+    <a asp-action="Create">Create New Ticket</a>
+    </p>*@
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Description)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Project)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Status)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Description)
+                </td>
+
+                <td>
+                    @Html.DisplayFor(modelItem => item.Project.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Status)
+                </td>
+
+                <td>
+
+                    <a asp-action="Details" asp-route-id="@item.Id">Details</a>
+
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+
+@section Scripts
+{
+    @{
+    await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+}

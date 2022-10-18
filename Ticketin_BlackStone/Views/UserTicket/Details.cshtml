@@ -1,0 +1,102 @@
+﻿@model Ticketin_BlackStone.Models.ViewModels.TicketsVM
+
+@{
+    ViewData["Title"] = "Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Ticket Details</h1>
+
+<div>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Ticket_Description)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Ticket_Description)
+        </dd>
+
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Ticket_Status)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Ticket_Status)
+        </dd>
+
+        @if (Model.Ticket_Status == false)
+        {
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.Ticket_ClosingReason)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Ticket_ClosingReason)
+            </dd>
+        }
+
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Project_Name)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Project_Name)
+        </dd>
+    </dl>
+
+    <label class='control-label'>Files:</label>
+    <ul>
+        @foreach (var file in Model.Files)
+        {
+            <li>
+                <a href="@file.Path" onclick="window.open('@file.Path')" target="_blank" rel="noopener noreferrer"> Attached File </a>
+            </li>
+        }
+    </ul>
+
+    <label class='control-label'>Comments:</label>
+    <ul>
+        @foreach (var com in Model.Comments)
+        {
+            <li>
+                @com.Body
+                ,created at:@com.CreatedDate
+            </li>
+        }
+    </ul>
+
+    @if (Model.Ticket_Status == true)
+    {
+        @await Html.PartialAsync("_CreateComment", new Ticketin_BlackStone.Models.Comment())
+    }
+    else
+    {
+        <p> Unfortunately, this ticket is closed, you can't add comments</p>
+    }
+
+
+    <hr />
+
+
+    @if (Model.Ticket_Status == true && Model.User_Id == (TempData["PassedUserID"]).ToString())
+    {
+        @await Html.PartialAsync("_CloseTicketPartial", new Ticketin_BlackStone.Models.Ticket())
+    }
+
+
+    @*@Html.Partial("_CloseTicketPartial", new Ticketin_BlackStone.Models.Ticket())*@
+    @*<button asp-for="Ticket_Status" onclick="location.href='@Url.Action("CloseTicket", "UserTicket", new { id = @Model.Ticket_Id })'" class="btn btn-primary">Close Ticket</button>*@
+    @*<button type="button" class="btn btn-primary" data-toggle="ajax-modal" data-target="#AddReason" data-url="@Url.Action("CloseTicket", "UserTicket", new { id = @Model.Ticket_Id })" >Close Ticket and and reason </button>*@
+
+
+    <a asp-action="Index">Back to Ticket List</a>
+</div>
+
+
+@section Scripts
+{
+    @{
+    await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+}
+
+
